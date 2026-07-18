@@ -18,7 +18,7 @@ export function Header() {
           <input
             type="text"
             placeholder="Search schools, hardware, or admins..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-slate-100 border-none rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
           />
         </div>
       </div>
@@ -34,8 +34,8 @@ export function Header() {
             <p className="text-sm font-semibold text-slate-800 leading-tight">Alex Rivers</p>
             <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-0.5">Super Admin</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold overflow-hidden">
-            <img src="https://ui-avatars.com/api/?name=Alex+Rivers&background=e0e7ff&color=4f46e5" alt="Admin" className="w-full h-full object-cover" />
+          <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold overflow-hidden">
+            <img src="https://ui-avatars.com/api/?name=Alex+Rivers&background=d1fae5&color=059669" alt="Admin" className="w-full h-full object-cover" />
           </div>
           <button 
             onClick={handleLogout}

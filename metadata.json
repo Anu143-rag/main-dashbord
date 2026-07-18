@@ -1,6 +1,8 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Voltava Drive",
+  "description": "Voltava Energy Systems Fleet Management Dashboard",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

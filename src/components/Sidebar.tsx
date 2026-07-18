@@ -17,12 +17,12 @@ export function Sidebar() {
     <aside className="w-64 bg-slate-900 text-slate-400 h-screen flex flex-col fixed left-0 top-0 shrink-0">
       <div className="h-16 flex items-center px-6 border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-indigo-500 rounded flex items-center justify-center text-white font-bold text-lg italic">
-            F
+          <div className="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center text-slate-900 font-black text-xl tracking-tighter">
+            V
           </div>
           <div>
-            <h1 className="font-semibold text-white tracking-tight text-lg leading-tight">FleetAdmin</h1>
-            <p className="text-[10px] uppercase text-slate-500 font-bold tracking-widest">Super Admin</p>
+            <h1 className="font-semibold text-white tracking-tight text-lg leading-tight">Voltava Drive</h1>
+            <p className="text-[10px] uppercase text-emerald-500 font-bold tracking-widest">Fleet Intelligence</p>
           </div>
         </div>
       </div>
