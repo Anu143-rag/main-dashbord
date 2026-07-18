@@ -164,7 +164,7 @@ export function Devices() {
                       {device.deviceId}
                     </td>
                     <td className="px-6 py-3 font-mono text-slate-600 text-xs">
-                      {device.serialNumber}
+                      {device.licensePlate || device.serialNumber}
                     </td>
                     <td className="px-6 py-3 text-slate-800 font-medium">
                       {device.school?.name || 'Unassigned'}

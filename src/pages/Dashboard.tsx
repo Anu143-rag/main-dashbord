@@ -39,7 +39,13 @@ export function Dashboard() {
       }
     })
       .then(res => res.json())
-      .then(data => setLogs(data));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setLogs(data);
+        } else if (data.data) {
+          setLogs(data.data);
+        }
+      });
 
     fetch('/api/devices/locations', {
       headers: {
@@ -49,9 +55,19 @@ export function Dashboard() {
       .then(res => res.json())
       .then(data => {
         const initialLocations: Record<string, any> = {};
-        data.forEach((loc: any) => {
-          initialLocations[loc.busId] = loc;
-        });
+        if (Array.isArray(data)) {
+          data.forEach((loc: any) => {
+            initialLocations[loc.busId] = {
+              busId: loc.busId,
+              lat: loc.lastKnownLat || loc.lat,
+              lng: loc.lastKnownLng || loc.lng,
+              speed: loc.speed || 0,
+              timestamp: loc.lastUpdate || loc.timestamp,
+              licensePlate: loc.licensePlate || loc.serialNumber,
+              schoolName: loc.schoolName
+            };
+          });
+        }
         setLocations(initialLocations);
       });
 
@@ -235,11 +251,11 @@ export function Dashboard() {
             <div className="grid grid-cols-3 gap-2">
               <div className="bg-slate-800 p-2 rounded border border-slate-700 text-center">
                 <p className="text-[10px] text-slate-400 mb-0.5">Active</p>
-                <p className="text-sm font-bold text-indigo-400">{stats?.active || 0}</p>
+                <p className="text-sm font-bold text-indigo-400">{stats?.activeDevices || 0}</p>
               </div>
               <div className="bg-slate-800 p-2 rounded border border-slate-700 text-center">
                 <p className="text-[10px] text-slate-400 mb-0.5">Stationary</p>
-                <p className="text-sm font-bold text-amber-400">{stats?.stationary || 0}</p>
+                <p className="text-sm font-bold text-amber-400">{stats?.stationaryDevices || 0}</p>
               </div>
               <div className="bg-rose-900/30 p-2 rounded border border-rose-800/50 text-center">
                 <p className="text-[10px] text-rose-400 mb-0.5">Warning</p>
@@ -259,10 +275,10 @@ export function Dashboard() {
                   <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${log.speed > 0 ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
                   <div>
                     <p className="text-sm font-medium text-slate-800 leading-tight">
-                      Bus {log.busId} ({log.serialNumber || 'Unknown'})
+                      Bus {log.busId} ({log.bus?.licensePlate || log.serialNumber || 'Unknown'})
                     </p>
                     <p className="text-xs text-slate-500 mt-1">
-                      {log.speed > 0 ? `Moving at ${log.speed} km/h` : 'Stationary'} near {log.schoolName || 'Unknown Location'}.
+                      {log.speed > 0 ? `Moving at ${log.speed} km/h` : 'Stationary'}.
                     </p>
                     <p className="text-[10px] text-slate-400 mt-1 font-mono">
                       {new Date(log.timestamp).toLocaleTimeString()}

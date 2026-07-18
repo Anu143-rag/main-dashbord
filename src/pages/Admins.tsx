@@ -22,7 +22,13 @@ export function Admins() {
       }
     })
       .then(res => res.json())
-      .then(data => setAdmins(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setAdmins(data);
+        } else if (data.data) {
+          setAdmins(data.data);
+        }
+      })
       .catch(err => console.error(err));
   }, []);
 
