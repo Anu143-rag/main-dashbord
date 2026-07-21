@@ -66,8 +66,8 @@ export function Settings() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-        <div className="w-10 h-10 bg-indigo-50 flex items-center justify-center rounded-lg">
-          <SettingsIcon className="w-5 h-5 text-indigo-600" />
+        <div className="w-10 h-10 bg-emerald-50 flex items-center justify-center rounded-lg">
+          <SettingsIcon className="w-5 h-5 text-emerald-600" />
         </div>
         <div>
           <h1 className="text-xl font-bold text-slate-800">Global Settings</h1>
@@ -97,7 +97,7 @@ export function Settings() {
                   onChange={e => setFormData({...formData, maintenanceMode: e.target.checked})} 
                   className="sr-only peer" 
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
               </label>
             </div>
           </div>
@@ -113,7 +113,7 @@ export function Settings() {
                   step="any"
                   value={formData.mapCenterLat} 
                   onChange={e => setFormData({...formData, mapCenterLat: parseFloat(e.target.value) || 0})} 
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" 
                 />
               </div>
               <div>
@@ -124,7 +124,7 @@ export function Settings() {
                   step="any"
                   value={formData.mapCenterLng} 
                   onChange={e => setFormData({...formData, mapCenterLng: parseFloat(e.target.value) || 0})} 
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" 
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ export function Settings() {
             <button 
               type="submit" 
               disabled={isSaving}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors rounded-lg flex items-center gap-2 disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-lg flex items-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               {isSaving ? 'Saving...' : 'Save Settings'}

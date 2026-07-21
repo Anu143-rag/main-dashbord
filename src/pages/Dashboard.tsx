@@ -90,7 +90,7 @@ export function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold text-slate-800">Fleet Overview</h1>
+        <h1 className="text-xl font-bold text-slate-800">System Overview</h1>
         <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">REAL-TIME MONITORING</span>
       </div>
 
@@ -99,30 +99,33 @@ export function Dashboard() {
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-start mb-1">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Active Schools</p>
-            <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center">
-              <Building2 className="w-3 h-3 text-indigo-500" />
+            <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center">
+              <Building2 className="w-3 h-3 text-emerald-500" />
             </div>
           </div>
           <div className="flex items-end gap-2">
             <h2 className="text-2xl font-bold text-slate-800">{stats?.totalSchools || '-'}</h2>
-            <span className="flex items-center gap-1 text-emerald-500 text-xs font-medium mb-1">
-              <TrendingUp className="w-3 h-3" /> +3%
-            </span>
+            {stats?.schoolsGrowthPercent != null && (
+              <span className="flex items-center gap-1 text-emerald-500 text-xs font-medium mb-1">
+                <TrendingUp className="w-3 h-3" /> +{stats.schoolsGrowthPercent}%
+              </span>
+            )}
           </div>
         </div>
-
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-start mb-1">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Buses Running</p>
-            <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center">
-              <Bus className="w-3 h-3 text-indigo-500" />
+            <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center">
+              <Bus className="w-3 h-3 text-emerald-500" />
             </div>
           </div>
           <div className="flex items-end gap-2">
             <h2 className="text-2xl font-bold text-slate-800">{stats?.totalBuses?.toLocaleString() || '-'}</h2>
-            <span className="flex items-center gap-1 text-emerald-500 text-xs font-medium mb-1">
-              <TrendingUp className="w-3 h-3" /> +12%
-            </span>
+            {stats?.busesGrowthPercent != null && (
+              <span className="flex items-center gap-1 text-emerald-500 text-xs font-medium mb-1">
+                <TrendingUp className="w-3 h-3" /> +{stats.busesGrowthPercent}%
+              </span>
+            )}
           </div>
         </div>
 
@@ -142,8 +145,8 @@ export function Dashboard() {
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-start mb-1">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Students Tracked</p>
-            <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center">
-              <Users className="w-3 h-3 text-indigo-500" />
+            <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center">
+              <Users className="w-3 h-3 text-emerald-500" />
             </div>
           </div>
           <div className="flex items-end gap-2">
@@ -157,7 +160,7 @@ export function Dashboard() {
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
           <div className="p-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="font-bold text-slate-800">Recently Onboarded Schools</h3>
-            <Link to="/schools" className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
+            <Link to="/schools" className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors">
               <Plus className="w-4 h-4" />
               Directory
             </Link>
@@ -176,12 +179,12 @@ export function Dashboard() {
               <tbody className="text-sm divide-y divide-slate-100">
                 {schools.slice(0, 5).map((school) => (
                   <tr key={school.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 font-mono text-indigo-600 font-medium text-xs">
+                    <td className="px-4 py-3 font-mono text-emerald-600 font-medium text-xs">
                       <Link to={`/schools/${school.id}`} className="hover:underline">{school.id}</Link>
                     </td>
                     <td className="px-4 py-3 text-slate-800 font-medium flex items-center gap-2">
-                      <div className="w-6 h-6 rounded bg-indigo-50 flex items-center justify-center">
-                        <Building2 className="w-3 h-3 text-indigo-600" />
+                      <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center">
+                        <Building2 className="w-3 h-3 text-emerald-600" />
                       </div>
                       {school.name}
                     </td>
@@ -192,7 +195,7 @@ export function Dashboard() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <Link to={`/schools/${school.id}`} className="text-xs text-indigo-600 font-bold hover:underline">
+                      <Link to={`/schools/${school.id}`} className="text-xs text-emerald-600 font-bold hover:underline">
                         Manage
                       </Link>
                     </td>
@@ -223,7 +226,7 @@ export function Dashboard() {
                {Object.values(locations).map((loc: any) => (
                  <div key={loc.busId}>
                    <div 
-                      className="absolute w-8 h-8 bg-indigo-500 rounded-full border-2 border-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.5)] flex items-center justify-center z-10 transition-all duration-1000 ease-in-out"
+                      className="absolute w-8 h-8 bg-emerald-500 rounded-full border-2 border-emerald-300 shadow-[0_0_15px_rgba(99,102,241,0.5)] flex items-center justify-center z-10 transition-all duration-1000 ease-in-out"
                       style={{
                         top: `${50 + (loc.lat - 28.7041) * 10000}%`,
                         left: `${50 + (loc.lng - 77.1025) * 10000}%`
@@ -251,7 +254,7 @@ export function Dashboard() {
             <div className="grid grid-cols-3 gap-2">
               <div className="bg-slate-800 p-2 rounded border border-slate-700 text-center">
                 <p className="text-[10px] text-slate-400 mb-0.5">Active</p>
-                <p className="text-sm font-bold text-indigo-400">{stats?.activeDevices || 0}</p>
+                <p className="text-sm font-bold text-emerald-400">{stats?.activeDevices || 0}</p>
               </div>
               <div className="bg-slate-800 p-2 rounded border border-slate-700 text-center">
                 <p className="text-[10px] text-slate-400 mb-0.5">Stationary</p>

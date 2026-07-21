@@ -83,13 +83,13 @@ export function Devices() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold text-slate-800">Hardware Devices</h1>
-          <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full border border-indigo-200">
+          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
             {totalCount} TOTAL
           </span>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Provision Device
@@ -100,7 +100,7 @@ export function Devices() {
         <div className="p-4 border-b border-slate-100 flex items-center gap-4 bg-slate-50">
           <div className="flex flex-col gap-1 w-48">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</label>
-            <select className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
               <option>All Statuses</option>
               <option>Online</option>
               <option>Offline</option>
@@ -115,7 +115,7 @@ export function Devices() {
                 placeholder="Search by Device ID or Serial..." 
                 value={search}
                 onChange={e => { setSearch(e.target.value); setPage(1); }}
-                className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" 
               />
             </div>
           </div>
@@ -159,8 +159,8 @@ export function Devices() {
               ) : (
                 devices.map((device) => (
                   <tr key={device.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-3 font-mono text-indigo-600 font-medium text-xs flex items-center gap-2">
-                      <Cpu className="w-4 h-4 text-indigo-400" />
+                    <td className="px-6 py-3 font-mono text-emerald-600 font-medium text-xs flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-emerald-400" />
                       {device.deviceId}
                     </td>
                     <td className="px-6 py-3 font-mono text-slate-600 text-xs">
@@ -211,7 +211,7 @@ export function Devices() {
             >
               &lt;
             </button>
-            <button className="w-7 h-7 flex items-center justify-center rounded bg-indigo-600 text-white font-medium">{page}</button>
+            <button className="w-7 h-7 flex items-center justify-center rounded bg-emerald-600 text-white font-medium">{page}</button>
             <button 
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
@@ -230,19 +230,19 @@ export function Devices() {
             <form onSubmit={handleAddDevice} className="space-y-4">
               <div>
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Device ID</label>
-                <input required type="text" value={formData.deviceId} onChange={e => setFormData({...formData, deviceId: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input required type="text" value={formData.deviceId} onChange={e => setFormData({...formData, deviceId: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Serial Number (Optional)</label>
-                <input type="text" value={formData.serialNumber} onChange={e => setFormData({...formData, serialNumber: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="text" value={formData.serialNumber} onChange={e => setFormData({...formData, serialNumber: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">License Plate (Optional)</label>
-                <input type="text" value={formData.licensePlate} onChange={e => setFormData({...formData, licensePlate: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="text" value={formData.licensePlate} onChange={e => setFormData({...formData, licensePlate: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
               </div>
               <div className="flex justify-end gap-3 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors rounded-lg">Cancel</button>
-                <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors rounded-lg">Provision</button>
+                <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-lg">Provision</button>
               </div>
             </form>
           </div>
