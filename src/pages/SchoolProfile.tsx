@@ -44,8 +44,12 @@ export function SchoolProfile() {
       .then(data => setStats(data));
   }, [id]);
 
-  const activeCount = devices.filter(d => d.status === 'ONLINE').length;
-  const offlineCount = devices.filter(d => d.status === 'OFFLINE').length;
+  let activeCount = 0;
+  let offlineCount = 0;
+  for (const d of devices) {
+    if (d.status === 'ONLINE') activeCount++;
+    else if (d.status === 'OFFLINE') offlineCount++;
+  }
   const totalCount = devices.length;
   const operationalPercent = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 0;
 
