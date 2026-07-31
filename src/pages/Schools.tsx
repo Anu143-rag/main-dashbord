@@ -14,8 +14,11 @@ export function Schools() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const activeSchools = schools.filter(s => s.status === 'Active').length;
-  const pendingSchools = schools.filter(s => s.status === 'Pending').length;
+  const { activeSchools, pendingSchools } = schools.reduce((acc, s) => {
+    if (s.status === 'Active') acc.activeSchools++;
+    else if (s.status === 'Pending') acc.pendingSchools++;
+    return acc;
+  }, { activeSchools: 0, pendingSchools: 0 });
 
   useEffect(() => {
     fetch(`/api/schools?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
