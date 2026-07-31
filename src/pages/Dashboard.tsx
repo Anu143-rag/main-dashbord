@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, AlertTriangle, Building2, Bus, Users, Plus } from 'lucide-react';
 import { io } from 'socket.io-client';
@@ -9,6 +9,8 @@ export function Dashboard() {
   const [schools, setSchools] = useState<School[]>([]);
   const [locations, setLocations] = useState<Record<string, {busId: string, lat: number, lng: number, speed: number, timestamp: string}>>({});
   const [logs, setLogs] = useState<any[]>([]);
+
+  const recentSchools = useMemo(() => schools.slice(0, 5), [schools]);
 
   useEffect(() => {
     fetch('/api/admin/stats', {
@@ -177,7 +179,7 @@ export function Dashboard() {
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-slate-100">
-                {schools.slice(0, 5).map((school) => (
+                {recentSchools.map((school) => (
                   <tr key={school.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3 font-mono text-emerald-600 font-medium text-xs">
                       <Link to={`/schools/${school.id}`} className="hover:underline">{school.id}</Link>
