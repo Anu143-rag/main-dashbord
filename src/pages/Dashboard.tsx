@@ -11,6 +11,7 @@ export function Dashboard() {
   const [logs, setLogs] = useState<any[]>([]);
 
   const recentSchools = useMemo(() => schools.slice(0, 5), [schools]);
+  const memoizedLocations = useMemo(() => Object.values(locations), [locations]);
 
   useEffect(() => {
     fetch('/api/admin/stats', {
@@ -225,7 +226,7 @@ export function Dashboard() {
             <div className="h-40 bg-slate-800 rounded-lg relative w-full overflow-hidden mb-4 border border-slate-700">
                {/* Map Placeholder styled to look like dark mode radar */}
                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at center, #6366f1 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
-               {Object.values(locations).map((loc: any) => (
+               {memoizedLocations.map((loc: any) => (
                  <div key={loc.busId}>
                    <div 
                       className="absolute w-8 h-8 bg-emerald-500 rounded-full border-2 border-emerald-300 shadow-[0_0_15px_rgba(99,102,241,0.5)] flex items-center justify-center z-10 transition-all duration-1000 ease-in-out"
