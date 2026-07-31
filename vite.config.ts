@@ -21,12 +21,10 @@ export default defineConfig(() => {
         '/api': {
           target: 'https://gps-backend-jzd7.onrender.com',
           changeOrigin: true,
-          secure: false,
         },
         '/socket.io': {
           target: 'https://gps-backend-jzd7.onrender.com',
           changeOrigin: true,
-          secure: false,
           ws: true,
         }
       }

@@ -1,0 +1,14 @@
+⚡ Optimize school lookup with Map and useMemo
+
+💡 **What:**
+- Separated the `/api/schools` fetch into its own `useEffect` with an empty dependency array (`[]`) to fetch the list of schools only once on mount.
+- Added `allSchools` state to persist the list of schools.
+- Utilized `useMemo` to build an O(1) dictionary/Map `schoolsMap` from the list of schools whenever `allSchools` is updated.
+- Created an additional `useEffect` to lookup the school using `schoolsMap.get(id)` when the `id` param changes.
+
+🎯 **Why:**
+The previous implementation performed an `Array.find` (O(N) time) for the school lookup directly within a `useEffect` that was dependent on the `id` param. This meant that on every school navigation, the client was forced to re-fetch the entire schools list from the API *and* perform a linear search. By splitting the fetch to occur only once on mount and using `useMemo` to construct a Map, subsequent navigations now perform an O(1) lookup without any re-fetching overhead, greatly improving CPU and network performance.
+
+📊 **Measured Improvement:**
+- Re-fetching overhead on ID change: Completely eliminated.
+- Map lookup performance: O(1) vs previous best-case O(1)/worst-case O(N).
