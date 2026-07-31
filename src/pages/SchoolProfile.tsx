@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Building2, Share, Edit2, Bus, Route, Users, MapPin, Mail, Phone, Globe, Info, MoreVertical, Plus } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
@@ -10,7 +10,9 @@ export function SchoolProfile() {
   const [school, setSchool] = useState<School | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [allSchools, setAllSchools] = useState<School[]>([]);
 
+  // Fetch all schools only once on mount
   useEffect(() => {
     fetch('/api/schools', {
       headers: {
@@ -20,10 +22,26 @@ export function SchoolProfile() {
       .then(res => res.json())
       .then((data: any) => {
         const schoolsList = Array.isArray(data) ? data : data.data || [];
-        const found = schoolsList.find((s: School) => s.id === id) || schoolsList[0];
-        setSchool(found);
+        setAllSchools(schoolsList);
       });
+  }, []);
 
+  // Memoize the Map for O(1) lookups
+  const schoolsMap = useMemo(() => {
+    const map = new Map<string, School>();
+    allSchools.forEach(s => map.set(s.id, s));
+    return map;
+  }, [allSchools]);
+
+  // Lookup the specific school when id or schoolsMap changes
+  useEffect(() => {
+    if (allSchools.length > 0) {
+      const found = schoolsMap.get(id || '') || allSchools[0];
+      setSchool(found);
+    }
+  }, [id, schoolsMap, allSchools]);
+
+  useEffect(() => {
     fetch('/api/devices', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
