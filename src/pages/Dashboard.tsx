@@ -12,17 +12,13 @@ export function Dashboard() {
 
   useEffect(() => {
     fetch('/api/admin/stats', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => setStats(data));
 
     fetch('/api/schools', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => {
@@ -34,9 +30,7 @@ export function Dashboard() {
       });
 
     fetch('/api/admin/logs', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => {
@@ -48,9 +42,7 @@ export function Dashboard() {
       });
 
     fetch('/api/devices/locations', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => {

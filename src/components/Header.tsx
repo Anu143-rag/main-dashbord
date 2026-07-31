@@ -25,18 +25,15 @@ export function Header() {
     console.error("Failed to parse user", e);
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(console.error);
+        localStorage.removeItem('user');
     navigate('/login');
   };
 
   const handleResolveNotification = (id: string) => {
     fetch(`/api/notifications/${id}/resolve`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+      method: 'POST'
     }).then(() => {
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'RESOLVED' } : n));
     }).catch(console.error);
@@ -55,7 +52,6 @@ export function Header() {
     // Fetch notifications
     fetch('/api/notifications', {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
       .then(res => res.json())
@@ -93,7 +89,6 @@ export function Header() {
     const delayDebounceFn = setTimeout(() => {
       fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
         .then(res => res.json())

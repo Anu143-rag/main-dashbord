@@ -16,9 +16,7 @@ export function Devices() {
 
   useEffect(() => {
     fetch(`/api/devices?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => {
@@ -46,7 +44,6 @@ export function Devices() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData)
       });
@@ -65,10 +62,7 @@ export function Devices() {
     if (!confirm('Are you sure you want to delete this device?')) return;
     try {
       const res = await fetch(`/api/devices/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        method: 'DELETE'
       });
       if (res.ok) {
         setDevices(devices.filter(d => d.id !== id));

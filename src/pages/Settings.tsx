@@ -17,9 +17,7 @@ export function Settings() {
 
   useEffect(() => {
     fetch('/api/settings', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then((data) => {
@@ -44,7 +42,6 @@ export function Settings() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify(formData)
       });

@@ -13,9 +13,7 @@ export function SchoolProfile() {
 
   useEffect(() => {
     fetch('/api/schools', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then((data: any) => {
@@ -25,9 +23,7 @@ export function SchoolProfile() {
       });
 
     fetch('/api/devices', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => {
@@ -36,9 +32,7 @@ export function SchoolProfile() {
       });
 
     fetch(`/api/schools/${id}/stats`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+
     })
       .then(res => res.json())
       .then(data => setStats(data));
