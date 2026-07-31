@@ -14,13 +14,13 @@ export function Dashboard() {
     fetch('/api/admin/stats', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then(data => setStats(data));
 
     fetch('/api/schools', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setSchools(data);
@@ -32,7 +32,7 @@ export function Dashboard() {
     fetch('/api/admin/logs', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setLogs(data);
@@ -44,7 +44,7 @@ export function Dashboard() {
     fetch('/api/devices/locations', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         const initialLocations: Record<string, any> = {};
         if (Array.isArray(data)) {

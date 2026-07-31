@@ -19,7 +19,7 @@ export function Admins() {
     fetch('/api/admins', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setAdmins(data);
