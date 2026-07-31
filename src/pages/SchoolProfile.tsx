@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Building2, Share, Edit2, Bus, Route, Users, MapPin, Mail, Phone, Globe, Info, MoreVertical, Plus } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
@@ -10,44 +10,72 @@ export function SchoolProfile() {
   const [school, setSchool] = useState<School | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
   const [stats, setStats] = useState<any>(null);
-  const [allSchools, setAllSchools] = useState<School[]>([]);
+  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editFormData, setEditFormData] = useState({ name: '', address: '', city: '', state: '', contactPerson: '' });
 
-  // Fetch all schools only once on mount
+  const handleEditClick = () => {
+    if (school) {
+      setEditFormData({
+        name: school.name || '',
+        address: school.address || '',
+        city: school.city || '',
+        state: school.state || '',
+        contactPerson: school.contactPerson || ''
+      });
+      setEditError(null);
+      setIsEditModalOpen(true);
+    }
+  };
+
+  const handleEditSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+    setEditError(null);
+    
+    try {
+      const res = await fetch(`/api/schools/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(editFormData)
+      });
+      if (res.ok) {
+        const updatedSchool = await res.json();
+        setSchool({ ...school, ...editFormData, ...updatedSchool });
+        setIsEditModalOpen(false);
+      } else {
+        console.error('Failed to update profile');
+        setEditError('Failed to update profile on the server (500 Error). Please inform the backend team.');
+      }
+    } catch (err) {
+      console.error(err);
+      setEditError('Network error occurred while updating profile.');
+    }
+  };
+
   useEffect(() => {
     fetch('/api/schools', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then((data: any) => {
         const schoolsList = Array.isArray(data) ? data : data.data || [];
-        setAllSchools(schoolsList);
+        const found = schoolsList.find((s: School) => s.id === id) || schoolsList[0];
+        setSchool(found);
       });
-  }, []);
 
-  // Memoize the Map for O(1) lookups
-  const schoolsMap = useMemo(() => {
-    const map = new Map<string, School>();
-    allSchools.forEach(s => map.set(s.id, s));
-    return map;
-  }, [allSchools]);
-
-  // Lookup the specific school when id or schoolsMap changes
-  useEffect(() => {
-    if (allSchools.length > 0) {
-      const found = schoolsMap.get(id || '') || allSchools[0];
-      setSchool(found);
-    }
-  }, [id, schoolsMap, allSchools]);
-
-  useEffect(() => {
     fetch('/api/devices', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         const devicesList = Array.isArray(data) ? data : data.data || [];
         setDevices(devicesList.filter((d: any) => d.schoolId === id));
@@ -58,16 +86,12 @@ export function SchoolProfile() {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then(data => setStats(data));
   }, [id]);
 
-  let activeCount = 0;
-  let offlineCount = 0;
-  for (const d of devices) {
-    if (d.status === 'ONLINE') activeCount++;
-    else if (d.status === 'OFFLINE') offlineCount++;
-  }
+  const activeCount = devices.filter(d => d.status === 'ONLINE').length;
+  const offlineCount = devices.filter(d => d.status === 'OFFLINE').length;
   const totalCount = devices.length;
   const operationalPercent = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 0;
 
@@ -111,7 +135,7 @@ export function SchoolProfile() {
             <Share className="w-4 h-4" />
             Export Data
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
+          <button onClick={handleEditClick} className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors">
             <Edit2 className="w-4 h-4" />
             Edit Profile
           </button>
@@ -338,13 +362,55 @@ export function SchoolProfile() {
           </table>
         </div>
         <div className="p-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 bg-slate-50">
-          <span>Showing 4 of 12 devices</span>
+          <span>Showing {devices.length} devices</span>
           <div className="flex items-center gap-1">
             <button className="p-1 rounded hover:bg-slate-200 disabled:opacity-50">&lt;</button>
             <button className="p-1 rounded hover:bg-slate-200 disabled:opacity-50">&gt;</button>
           </div>
         </div>
       </div>
+
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-bold text-slate-800 mb-4">Edit School Profile</h2>
+            {editError && (
+              <div className="mb-4 p-3 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg text-sm">
+                {editError}
+              </div>
+            )}
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">School Name</label>
+                <input required type="text" value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Contact Person</label>
+                <input required type="text" value={editFormData.contactPerson} onChange={e => setEditFormData({...editFormData, contactPerson: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Address</label>
+                <input required type="text" value={editFormData.address} onChange={e => setEditFormData({...editFormData, address: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">City</label>
+                  <input required type="text" value={editFormData.city} onChange={e => setEditFormData({...editFormData, city: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">State</label>
+                  <input required type="text" value={editFormData.state} onChange={e => setEditFormData({...editFormData, state: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors rounded-lg">Cancel</button>
+                <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-lg">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

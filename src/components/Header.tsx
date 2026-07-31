@@ -42,35 +42,8 @@ export function Header() {
     }).catch(console.error);
   };
 
-  const handleResolveAll = async () => {
-    const unresolved = notifications.filter(n => n.status !== 'RESOLVED');
-    if (unresolved.length === 0) return;
-
-    const token = localStorage.getItem('token');
-    const promises = unresolved.map(n =>
-      fetch(`/api/notifications/${n.id}/resolve`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }).then(res => {
-        if (!res.ok) throw new Error('Failed to resolve');
-        return n.id;
-      })
-    );
-
-    const results = await Promise.allSettled(promises);
-    const resolvedIds = new Set(
-      results
-        .filter((r) => r.status === 'fulfilled')
-        .map((r) => (r).value)
-    );
-
-    if (resolvedIds.size > 0) {
-      setNotifications(prev => prev.map(n =>
-        resolvedIds.has(n.id) ? { ...n, status: 'RESOLVED' } : n
-      ));
-    }
+  const handleResolveAll = () => {
+    notifications.filter(n => n.status !== 'RESOLVED').forEach(n => handleResolveNotification(n.id));
   };
 
   const displayName = user?.name || 'Admin';
@@ -85,7 +58,7 @@ export function Header() {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setNotifications(data);
@@ -123,7 +96,7 @@ export function Header() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       })
-        .then(res => res.json())
+        .then(res => res.ok ? res.json() : null)
         .then(data => {
           setSearchResults(data);
         })
