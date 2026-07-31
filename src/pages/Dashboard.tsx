@@ -152,7 +152,7 @@ export function Dashboard() {
             </div>
           </div>
           <div className="flex items-end gap-2">
-            <h2 className="text-2xl font-bold text-slate-800">{stats ? stats.totalStudents.toLocaleString() : '-'}</h2>
+            <h2 className="text-2xl font-bold text-slate-800">{stats?.totalStudents?.toLocaleString() || '-'}</h2>
           </div>
         </div>
       </div>
