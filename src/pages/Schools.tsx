@@ -1,6 +1,6 @@
 import { useEffect, useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, Plus, Calendar, Filter, MoreVertical, HeartHandshake, ClipboardList, Search } from 'lucide-react';
+import { Building2, Plus, Calendar, Filter, HeartHandshake, ClipboardList, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
 import type { School } from '../types';
 

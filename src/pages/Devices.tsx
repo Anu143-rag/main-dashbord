@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent } from 'react';
-import { Cpu, Search, Filter, MoreVertical, Plus } from 'lucide-react';
+import { Cpu, Search, Filter, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import type { Device } from '../types';
 
