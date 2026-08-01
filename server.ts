@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import compression from 'compression';
 
 const TARGET_API = 'https://gps-backend-jzd7.onrender.com';
 
@@ -41,6 +42,9 @@ async function startServer() {
     res.json({ success: true });
   });
   // ------------------------------------------------
+
+  // Add compression middleware
+  app.use(compression());
 
   // Setup Proxy for /api
   const apiProxy = createProxyMiddleware({
