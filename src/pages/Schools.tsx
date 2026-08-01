@@ -7,7 +7,11 @@ import type { School } from '../types';
 export function Schools() {
   const [schools, setSchools] = useState<School[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', address: '', city: '', state: '', contactPerson: '' });
+  const [formData, setFormData] = useState({
+    name: '', address: '', city: '', state: '', contactPerson: '',
+    adminName: '', adminEmail: '', adminPassword: '',
+    deviceId: '', licensePlate: ''
+  });
   
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -21,7 +25,7 @@ export function Schools() {
     fetch(`/api/schools?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         // Handle pagination if API supports it (assuming data is either array or {data, total})
         if (Array.isArray(data)) {
@@ -44,11 +48,59 @@ export function Schools() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          name: formData.name,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          contactPerson: formData.contactPerson
+        })
       });
       if (res.ok) {
+        const newSchool = await res.json();
+        const schoolId = newSchool.id || newSchool.data?.id;
+
+        // Add Admin if provided
+        if (formData.adminEmail && formData.adminPassword) {
+          await fetch('/api/admins', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              name: formData.adminName || formData.contactPerson || 'School Admin',
+              email: formData.adminEmail,
+              password: formData.adminPassword,
+              role: 'SCHOOL_ADMIN',
+              schoolId
+            })
+          });
+        }
+
+        // Add Device if provided
+        if (formData.deviceId) {
+          await fetch('/api/devices', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+              deviceId: formData.deviceId,
+              licensePlate: formData.licensePlate || 'Unassigned',
+              serialNumber: '',
+              schoolId
+            })
+          });
+        }
+
         setIsModalOpen(false);
-        setFormData({ name: '', address: '', city: '', state: '', contactPerson: '' });
+        setFormData({
+          name: '', address: '', city: '', state: '', contactPerson: '',
+          adminName: '', adminEmail: '', adminPassword: '',
+          deviceId: '', licensePlate: ''
+        });
         // Force refresh
         setPage(1);
         setSearch('');
@@ -260,7 +312,7 @@ export function Schools() {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-slate-800 mb-4">Add New School</h2>
             <form onSubmit={handleAddSchool} className="space-y-4">
               <div>
@@ -285,7 +337,40 @@ export function Schools() {
                   <input required type="text" value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
                 </div>
               </div>
-              <div className="flex justify-end gap-3 mt-6">
+
+              <div className="pt-4 border-t border-slate-100">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Initial Admin (Optional)</h3>
+                <div className="space-y-3">
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Admin Email</label>
+                      <input type="email" value={formData.adminEmail} onChange={e => setFormData({...formData, adminEmail: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="admin@school.com" />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Password</label>
+                      <input type="password" value={formData.adminPassword} onChange={e => setFormData({...formData, adminPassword: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3">Initial Device (Optional)</h3>
+                <div className="space-y-3">
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Device ID</label>
+                      <input type="text" value={formData.deviceId} onChange={e => setFormData({...formData, deviceId: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. TM100-XXX" />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">License Plate</label>
+                      <input type="text" value={formData.licensePlate} onChange={e => setFormData({...formData, licensePlate: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. DL1P-1234" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors rounded-lg">Cancel</button>
                 <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-lg">Add School</button>
               </div>

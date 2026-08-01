@@ -18,7 +18,7 @@ export function Devices() {
     fetch(`/api/devices?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setDevices(data);

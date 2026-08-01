@@ -19,7 +19,7 @@ export function Settings() {
     fetch('/api/settings', {
 
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then((data) => {
         setSettings(data);
         if (data) {
