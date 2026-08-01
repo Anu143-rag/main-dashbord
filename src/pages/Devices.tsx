@@ -20,7 +20,7 @@ export function Devices() {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setDevices(data);

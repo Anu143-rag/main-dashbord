@@ -21,7 +21,7 @@ export function Settings() {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then((data) => {
         setSettings(data);
         if (data) {

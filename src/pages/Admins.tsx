@@ -21,7 +21,7 @@ export function Admins() {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setAdmins(data);
