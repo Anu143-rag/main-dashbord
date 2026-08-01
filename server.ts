@@ -7,7 +7,7 @@ const TARGET_API = 'https://gps-backend-jzd7.onrender.com';
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
   // --- Mock endpoints for pending backend updates ---
   app.get('/api/search', (req, res) => {
@@ -57,6 +57,15 @@ async function startServer() {
     next();
   });
 
+  // Setup Proxy for Websockets
+  const wsProxy = createProxyMiddleware({
+    target: TARGET_API,
+    changeOrigin: true,
+    ws: true,
+    secure: false,
+  });
+  app.use('/socket.io', wsProxy);
+
   // --- Vite Middleware ---
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
@@ -68,25 +77,14 @@ async function startServer() {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
-      if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
-        return; 
-      }
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
-  const httpServer = app.listen(PORT, '0.0.0.0', () => {
+  const httpServer = app.listen(PORT as number, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
   
-  // Setup Proxy for Websockets
-  const wsProxy = createProxyMiddleware({
-    target: TARGET_API,
-    changeOrigin: true,
-    ws: true,
-    secure: false,
-  });
-  app.use('/socket.io', wsProxy);
   httpServer.on('upgrade', wsProxy.upgrade as any);
 }
 
