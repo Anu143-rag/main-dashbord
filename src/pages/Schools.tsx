@@ -235,26 +235,26 @@ export function Schools() {
           </div>
         </div>
 
-        <div className="overflow-x-auto flex-1">
+        <div className="overflow-x-auto min-w-full flex-1">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School Name</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">City / District</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contact Person</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Active Buses</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School Name</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">City / District</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Contact Person</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Active Buses</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="text-sm divide-y divide-slate-100">
               {schools.map((school) => (
                 <tr key={school.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-3 font-mono text-slate-600 text-xs">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 font-mono text-slate-600 text-xs">
                     {school.id}
                   </td>
-                  <td className="px-6 py-3 text-slate-800 font-medium flex items-center gap-3">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 text-slate-800 font-medium flex items-center gap-3 truncate max-w-[150px]">
                     <div className={cn(
                       "w-6 h-6 rounded flex items-center justify-center",
                       school.status === 'Active' ? "bg-emerald-50 text-emerald-600" :
@@ -265,12 +265,12 @@ export function Schools() {
                     </div>
                     <Link to={`/schools/${school.id}`} className="hover:text-emerald-600 transition-colors">{school.name}</Link>
                   </td>
-                  <td className="px-6 py-3 text-slate-600">{school.city}</td>
-                  <td className="px-6 py-3 text-slate-600">{school.contactPerson}</td>
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 text-slate-600">{school.city}</td>
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 text-slate-600">{school.contactPerson}</td>
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 text-center">
                     <span className="font-medium text-slate-800">{school.activeBuses}</span>
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3">
                     <span className={cn(
                       "px-2 py-1 rounded text-[10px] font-bold uppercase",
                       school.status === 'Active' ? "bg-emerald-50 text-emerald-600" :
@@ -280,7 +280,7 @@ export function Schools() {
                       {school.status}
                     </span>
                   </td>
-                  <td className="px-6 py-3 text-right">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3 text-right">
                     <button 
                       onClick={() => handleDeleteSchool(school.id)}
                       className="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 transition-colors"

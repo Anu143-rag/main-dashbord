@@ -1,8 +1,8 @@
-import { Bell, Search, LogOut, Loader2, Building2, Cpu, Users, AlertTriangle } from 'lucide-react';
+import { Bell, Menu, Search, LogOut, Loader2, Building2, Cpu, Users, AlertTriangle } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
-export function Header() {
+export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const navigate = useNavigate();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,8 +108,12 @@ export function Header() {
   }, [searchQuery]);
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 ml-64 shrink-0 relative z-50">
-      <div className="flex items-center w-full max-w-xl" ref={searchRef}>
+    <header className="h-auto sm:h-16 py-4 sm:py-0 bg-white border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 sm:px-8 lg:ml-64 shrink-0 relative z-40 gap-4 sm:gap-0">
+      <div className="flex items-center w-full max-w-xl gap-3">
+        <button onClick={onMenuClick} className="lg:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center w-full max-w-xl" ref={searchRef}>
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -202,8 +206,9 @@ export function Header() {
           )}
         </div>
       </div>
+      </div>
       
-      <div className="flex items-center gap-6">
+      <div className="flex items-center justify-end w-full sm:w-auto gap-4 sm:gap-6">
         <div className="relative" ref={notifRef}>
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
