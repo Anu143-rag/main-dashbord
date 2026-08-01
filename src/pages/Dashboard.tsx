@@ -95,7 +95,7 @@ export function Dashboard() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-start mb-1">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Active Schools</p>
@@ -165,36 +165,36 @@ export function Dashboard() {
               Directory
             </Link>
           </div>
-          <div className="overflow-x-auto flex-1">
+          <div className="overflow-x-auto min-w-full flex-1">
             <table className="w-full text-left">
               <thead className="bg-slate-50 border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School Name</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">City</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Active Buses</th>
-                  <th className="px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                  <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
+                  <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School Name</th>
+                  <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">City</th>
+                  <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-center">Active Buses</th>
+                  <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="text-sm divide-y divide-slate-100">
                 {schools.slice(0, 5).map((school) => (
                   <tr key={school.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 font-mono text-emerald-600 font-medium text-xs">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 font-mono text-emerald-600 font-medium text-xs">
                       <Link to={`/schools/${school.id}`} className="hover:underline">{school.id}</Link>
                     </td>
-                    <td className="px-4 py-3 text-slate-800 font-medium flex items-center gap-2">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 text-slate-800 font-medium flex items-center gap-2 truncate max-w-[150px]">
                       <div className="w-6 h-6 rounded bg-emerald-50 flex items-center justify-center">
                         <Building2 className="w-3 h-3 text-emerald-600" />
                       </div>
                       {school.name}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{school.city}, {school.state}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 text-slate-600">{school.city}, {school.state}</td>
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 text-center">
                       <span className="px-2 py-1 bg-emerald-50 text-emerald-600 rounded text-[10px] font-bold uppercase">
                         {school.activeBuses} Active
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 text-right">
                       <Link to={`/schools/${school.id}`} className="text-xs text-emerald-600 font-bold hover:underline">
                         Manage
                       </Link>
@@ -220,7 +220,7 @@ export function Dashboard() {
               <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">Live Network Status</h3>
               <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/30">ONLINE</span>
             </div>
-            <div className="h-40 bg-slate-800 rounded-lg relative w-full overflow-hidden mb-4 border border-slate-700">
+            <div className="w-full h-[300px] sm:h-[400px] bg-slate-800 rounded-lg relative overflow-hidden mb-4 border border-slate-700">
                {/* Map Placeholder styled to look like dark mode radar */}
                <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at center, #6366f1 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
                {Object.values(locations).map((loc: any) => (

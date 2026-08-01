@@ -90,15 +90,15 @@ export function Admins() {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-x-auto flex-1">
+        <div className="overflow-x-auto min-w-full flex-1">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
-                <th className="px-6 py-3 text-right"></th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Email</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Role</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">School ID</th>
+                <th className="px-2 py-2 sm:px-4 sm:py-3 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -111,21 +111,21 @@ export function Admins() {
               ) : (
                 admins.map((admin) => (
                   <tr key={admin.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-3">
-                      <div className="font-medium text-slate-900 text-sm">{admin.name}</div>
+                    <td className="px-2 py-2 sm:px-4 sm:py-3">
+                      <div className="font-medium text-slate-900 text-sm truncate max-w-[150px]">{admin.name}</div>
                     </td>
-                    <td className="px-6 py-3">
-                      <div className="text-sm text-slate-600">{admin.email}</div>
+                    <td className="px-2 py-2 sm:px-4 sm:py-3">
+                      <div className="text-sm text-slate-600 truncate max-w-[150px]">{admin.email}</div>
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800">
                         {admin.role.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-3">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3">
                       <div className="text-sm text-slate-500">{admin.schoolId || '-'}</div>
                     </td>
-                    <td className="px-6 py-3 text-right">
+                    <td className="px-2 py-2 sm:px-4 sm:py-3 text-right">
                       <button 
                         onClick={() => handleDeleteAdmin(admin.id)}
                         className="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 transition-colors"
