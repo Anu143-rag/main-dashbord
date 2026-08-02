@@ -17,26 +17,12 @@ window.fetch = async (...args) => {
     url = resource.url;
   }
 
-  if (url.startsWith('/api') || url.includes('/api/')) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      if (resource instanceof Request) {
-        resource.headers.set('Authorization', `Bearer ${token}`);
-      } else {
-        config = config || {};
-        config.headers = {
-          ...config.headers,
-          Authorization: `Bearer ${token}`
-        };
-      }
-    }
-  }
+
 
   try {
     const response = await originalFetch(resource, config);
 
     if (response.status === 401 && window.location.pathname !== '/login') {
-      localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }

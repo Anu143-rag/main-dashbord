@@ -17,9 +17,6 @@ export function Admins() {
 
   useEffect(() => {
     fetch('/api/admins', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
@@ -39,8 +36,7 @@ export function Admins() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
+          },
         body: JSON.stringify(formData)
       });
       if (res.ok) {
@@ -58,10 +54,7 @@ export function Admins() {
     if (!confirm('Are you sure you want to delete this admin?')) return;
     try {
       const res = await fetch(`/api/admins/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        method: 'DELETE'
       });
       if (res.ok) {
         setAdmins(admins.filter(a => a.id !== id));

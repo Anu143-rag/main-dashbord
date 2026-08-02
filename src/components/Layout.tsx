@@ -11,8 +11,8 @@ export function Layout() {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  const token = localStorage.getItem('token');
-  if (!token) {
+  const user = localStorage.getItem('user');
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
