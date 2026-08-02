@@ -39,8 +39,7 @@ export function SchoolProfile() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
+          },
         body: JSON.stringify(editFormData)
       });
       if (res.ok) {
@@ -59,9 +58,6 @@ export function SchoolProfile() {
 
   useEffect(() => {
     fetch('/api/schools', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : [])
       .then((data: any) => {
@@ -71,9 +67,6 @@ export function SchoolProfile() {
       });
 
     fetch('/api/devices', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
@@ -82,9 +75,6 @@ export function SchoolProfile() {
       });
 
     fetch(`/api/schools/${id}/stats`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : null)
       .then(data => setStats(data));

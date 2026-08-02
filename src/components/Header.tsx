@@ -25,18 +25,20 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     console.error("Failed to parse user", e);
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = async () => {
     localStorage.removeItem('user');
-    navigate('/login');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.error('Logout request failed', e);
+    } finally {
+      navigate('/login');
+    }
   };
 
   const handleResolveNotification = (id: string) => {
     fetch(`/api/notifications/${id}/resolve`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+      method: 'POST'
     }).then(() => {
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, status: 'RESOLVED' } : n));
     }).catch(console.error);
@@ -48,10 +50,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
 
     const promises = unread.map(async (n) => {
       const res = await fetch(`/api/notifications/${n.id}/resolve`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        method: 'POST'
       });
       if (!res.ok) throw new Error(`Failed to resolve ${n.id}`);
       return n.id;
@@ -84,9 +83,6 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   useEffect(() => {
     // Fetch notifications
     fetch('/api/notifications', {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
@@ -122,9 +118,6 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     
     const delayDebounceFn = setTimeout(() => {
       fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
       })
         .then(res => res.ok ? res.json() : null)
         .then(data => {

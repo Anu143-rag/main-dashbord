@@ -53,9 +53,42 @@ async function startServer() {
     secure: false,
   });
   
+  app.post('/api/auth/login', express.json(), async (req, res) => {
+    try {
+      const fetchRes = await fetch(`${TARGET_API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req.body)
+      });
+      const data = await fetchRes.json();
+      if (fetchRes.ok && data.token) {
+        res.cookie('token', data.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 24 * 60 * 60 * 1000
+        });
+        res.status(fetchRes.status).json({ user: data.user });
+      } else {
+        res.status(fetchRes.status).json(data);
+      }
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ success: true });
+  });
+
   // Use a middleware function to avoid express stripping the path
   app.use((req, res, next) => {
     if (req.url.startsWith('/api')) {
+      const tokenMatch = req.headers.cookie?.match(/(?:^|;\s*)token=([^;]*)/);
+      if (tokenMatch) {
+        req.headers['authorization'] = `Bearer ${tokenMatch[1]}`;
+      }
       return apiProxy(req, res, next);
     }
     next();
@@ -89,7 +122,13 @@ async function startServer() {
     console.log(`Server running on http://localhost:${PORT}`);
   });
   
-  httpServer.on('upgrade', wsProxy.upgrade as any);
+  httpServer.on('upgrade', (req, socket, head) => {
+    const tokenMatch = req.headers.cookie?.match(/(?:^|;\s*)token=([^;]*)/);
+    if (tokenMatch) {
+      req.headers['authorization'] = `Bearer ${tokenMatch[1]}`;
+    }
+    (wsProxy.upgrade as any)(req, socket, head);
+  });
 }
 
 startServer();

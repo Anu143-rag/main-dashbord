@@ -23,9 +23,6 @@ export function Schools() {
 
   useEffect(() => {
     fetch(`/api/schools?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
     })
       .then(res => res.ok ? res.json() : [])
       .then(data => {
@@ -49,8 +46,7 @@ export function Schools() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
+          },
         body: JSON.stringify({
           name: formData.name,
           address: formData.address,
@@ -69,8 +65,7 @@ export function Schools() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
+              },
             body: JSON.stringify({
               name: formData.adminName || formData.contactPerson || 'School Admin',
               email: formData.adminEmail,
@@ -87,8 +82,7 @@ export function Schools() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
+              },
             body: JSON.stringify({
               deviceId: formData.deviceId,
               licensePlate: formData.licensePlate || 'Unassigned',
@@ -109,7 +103,6 @@ export function Schools() {
         setSearch('');
         // We can just fetch the first page again
         const refreshRes = await fetch(`/api/schools?page=1&limit=50&search=`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         const refreshData = await refreshRes.json();
         setSchools(refreshData.data || refreshData);
@@ -124,10 +117,7 @@ export function Schools() {
     if (!confirm('Are you sure you want to delete this school?')) return;
     try {
       const res = await fetch(`/api/schools/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        method: 'DELETE'
       });
       if (res.ok) {
         setSchools(schools.filter(s => s.id !== id));

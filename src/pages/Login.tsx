@@ -28,7 +28,6 @@ export function Login() {
       }
 
       const data = await res.json();
-      localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/');
     } catch (err: any) {
