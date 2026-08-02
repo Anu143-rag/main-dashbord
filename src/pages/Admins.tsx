@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent } from 'react';
-import { Users, Plus, MoreVertical } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface Admin {
   id: string;
