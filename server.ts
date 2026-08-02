@@ -41,6 +41,10 @@ async function startServer() {
   app.post('/api/notifications/:id/resolve', (req, res) => {
     res.json({ success: true });
   });
+
+  app.post('/api/notifications/resolve-batch', express.json(), (req, res) => {
+    res.json({ success: true });
+  });
   // ------------------------------------------------
 
   // Add compression middleware
