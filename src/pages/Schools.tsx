@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Building2, Plus, Calendar, Filter, MoreVertical, HeartHandshake, ClipboardList, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -18,8 +18,7 @@ export function Schools() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  const activeSchools = schools.filter(s => s.status === 'Active').length;
-  const pendingSchools = schools.filter(s => s.status === 'Pending').length;
+  const [activeSchools, pendingSchools] = useMemo(() => schools.reduce((acc, s) => { if (s.status === 'Active') acc[0]++; else if (s.status === 'Pending') acc[1]++; return acc; }, [0, 0]), [schools]);
 
   useEffect(() => {
     fetch(`/api/schools?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
