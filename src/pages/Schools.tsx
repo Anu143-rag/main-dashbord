@@ -63,9 +63,11 @@ export function Schools() {
         const newSchool = await res.json();
         const schoolId = newSchool.id || newSchool.data?.id;
 
+        const tasks: Promise<any>[] = [];
+
         // Add Admin if provided
         if (formData.adminEmail && formData.adminPassword) {
-          await fetch('/api/admins', {
+          tasks.push(fetch('/api/admins', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -78,12 +80,12 @@ export function Schools() {
               role: 'SCHOOL_ADMIN',
               schoolId
             })
-          });
+          }));
         }
         
         // Add Device if provided
         if (formData.deviceId) {
-          await fetch('/api/devices', {
+          tasks.push(fetch('/api/devices', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -95,7 +97,11 @@ export function Schools() {
               serialNumber: '',
               schoolId
             })
-          });
+          }));
+        }
+
+        if (tasks.length > 0) {
+          await Promise.all(tasks);
         }
 
         setIsModalOpen(false);
