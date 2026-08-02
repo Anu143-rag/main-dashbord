@@ -46,33 +46,26 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     const unread = notifications.filter(n => n.status !== 'RESOLVED');
     if (unread.length === 0) return;
 
-    const promises = unread.map(async (n) => {
-      const res = await fetch(`/api/notifications/${n.id}/resolve`, {
+    const unreadIds = unread.map(n => n.id);
+
+    try {
+      const res = await fetch('/api/notifications/resolve-batch', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ids: unreadIds })
       });
-      if (!res.ok) throw new Error(`Failed to resolve ${n.id}`);
-      return n.id;
-    });
 
-    const results = await Promise.allSettled(promises);
+      if (!res.ok) throw new Error('Failed to resolve notifications');
 
-    const successfulIds = new Set(
-      results
-        .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
-        .map(r => r.value)
-    );
-
-    const hasFailures = results.some(r => r.status === 'rejected');
-
-    setNotifications(prev =>
-      prev.map(n => successfulIds.has(n.id) ? { ...n, status: 'RESOLVED' } : n)
-    );
-
-    if (hasFailures) {
-      alert('Some notifications failed to resolve. Please try again.');
+      setNotifications(prev =>
+        prev.map(n => unreadIds.includes(n.id) ? { ...n, status: 'RESOLVED' } : n)
+      );
+    } catch (error) {
+      console.error(error);
+      alert('Failed to resolve notifications. Please try again.');
     }
   };
 
