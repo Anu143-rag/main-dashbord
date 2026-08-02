@@ -16,11 +16,19 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const searchRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  // Parse user from localStorage safely
-  let user: any = null;
+  // Parse user from localStorage safely with type guarding
+  let user: { name?: string; role?: string } | null = null;
   try {
     const userStr = localStorage.getItem('user');
-    if (userStr) user = JSON.parse(userStr);
+    if (userStr) {
+      const parsed = JSON.parse(userStr);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        user = {
+          name: typeof parsed.name === 'string' ? parsed.name : undefined,
+          role: typeof parsed.role === 'string' ? parsed.role : undefined,
+        };
+      }
+    }
   } catch (e) {
     console.error("Failed to parse user", e);
   }
