@@ -1,5 +1,5 @@
 import { useEffect, useState, FormEvent, useMemo } from 'react';
-import { Cpu, Search, Filter, MoreVertical, Plus } from 'lucide-react';
+import { Cpu, Search, Filter, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import type { Device } from '../types';
 
@@ -13,7 +13,7 @@ export function Devices() {
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
+
 
 
   const deviceStats = useMemo(() => {
@@ -56,11 +56,11 @@ export function Devices() {
         if (Array.isArray(data)) {
           setDevices(data);
           setTotalPages(1);
-          setTotalCount(data.length);
+
         } else if (data.data) {
           setDevices(data.data);
           setTotalPages(Math.ceil(data.total / 50) || 1);
-          setTotalCount(data.total);
+
         }
         setLoading(false);
       })

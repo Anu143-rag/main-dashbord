@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, AlertTriangle, Building2, Bus, Users, Plus } from 'lucide-react';
 import { io } from 'socket.io-client';
-import type { Stats, School } from '../types';
+import type { School } from '../types';
 
 export function Dashboard() {
   const [stats, setStats] = useState<any>(null);
