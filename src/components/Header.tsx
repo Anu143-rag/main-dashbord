@@ -42,8 +42,38 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
     }).catch(console.error);
   };
 
-  const handleResolveAll = () => {
-    notifications.filter(n => n.status !== 'RESOLVED').forEach(n => handleResolveNotification(n.id));
+  const handleResolveAll = async () => {
+    const unread = notifications.filter(n => n.status !== 'RESOLVED');
+    if (unread.length === 0) return;
+
+    const promises = unread.map(async (n) => {
+      const res = await fetch(`/api/notifications/${n.id}/resolve`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!res.ok) throw new Error(`Failed to resolve ${n.id}`);
+      return n.id;
+    });
+
+    const results = await Promise.allSettled(promises);
+
+    const successfulIds = new Set(
+      results
+        .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
+        .map(r => r.value)
+    );
+
+    const hasFailures = results.some(r => r.status === 'rejected');
+
+    setNotifications(prev =>
+      prev.map(n => successfulIds.has(n.id) ? { ...n, status: 'RESOLVED' } : n)
+    );
+
+    if (hasFailures) {
+      alert('Some notifications failed to resolve. Please try again.');
+    }
   };
 
   const displayName = user?.name || 'Admin';
