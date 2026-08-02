@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useMemo } from 'react';
 import { Cpu, Search, Filter, MoreVertical, Plus } from 'lucide-react';
 import { cn } from '../lib/utils';
 import type { Device } from '../types';
@@ -9,13 +9,44 @@ export function Devices() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ deviceId: '', serialNumber: '', licensePlate: '' });
   
-  const [search, setSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
+
+  const deviceStats = useMemo(() => {
+    const totalCount = devices.length;
+    const activeCount = devices.filter(d => d.status === 'ONLINE').length;
+    const totalErrorAlerts = devices.filter(d => d.status === 'ERROR' || d.status === 'OFFLINE').length;
+    const percentageActive = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 0;
+
+    return {
+      totalCount,
+      activeCount,
+      totalErrorAlerts,
+      percentageActive
+    };
+  }, [devices]);
+
+  const filteredDevices = useMemo(() => {
+    return devices.filter(device => {
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = !searchQuery ||
+        (device.deviceId && device.deviceId.toLowerCase().includes(searchLower)) ||
+        (device.serialNumber && device.serialNumber.toLowerCase().includes(searchLower)) ||
+        (device.licensePlate && device.licensePlate.toLowerCase().includes(searchLower));
+
+      const matchesStatus = selectedStatus === 'All Statuses' ||
+        device.status === selectedStatus.toUpperCase();
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [devices, selectedStatus, searchQuery]);
+
   useEffect(() => {
-    fetch(`/api/devices?page=${page}&limit=50&search=${encodeURIComponent(search)}`, {
+    fetch(`/api/devices?page=${page}&limit=50&search=${encodeURIComponent(searchQuery)}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -37,7 +68,7 @@ export function Devices() {
         console.error("Error fetching devices", err);
         setLoading(false);
       });
-  }, [search, page]);
+  }, [searchQuery, page]);
 
   const handleAddDevice = async (e: FormEvent) => {
     e.preventDefault();
@@ -83,9 +114,17 @@ export function Devices() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-xl font-bold text-slate-800">Hardware Devices</h1>
-          <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
-            {totalCount} TOTAL
-          </span>
+          <div className="flex gap-2">
+            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200">
+              {deviceStats.totalCount} TOTAL
+            </span>
+            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
+              {deviceStats.percentageActive}% ACTIVE
+            </span>
+            <span className="px-2 py-0.5 bg-rose-100 text-rose-700 text-xs font-bold rounded-full border border-rose-200">
+              {deviceStats.totalErrorAlerts} ERRORS
+            </span>
+          </div>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
@@ -100,7 +139,11 @@ export function Devices() {
         <div className="p-4 border-b border-slate-100 flex items-center gap-4 bg-slate-50">
           <div className="flex flex-col gap-1 w-48">
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status</label>
-            <select className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <select
+              value={selectedStatus}
+              onChange={e => { setSelectedStatus(e.target.value); setPage(1); }}
+              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
               <option>All Statuses</option>
               <option>Online</option>
               <option>Offline</option>
@@ -113,15 +156,15 @@ export function Devices() {
               <input 
                 type="text" 
                 placeholder="Search by Device ID or Serial..." 
-                value={search}
-                onChange={e => { setSearch(e.target.value); setPage(1); }}
+                value={searchQuery}
+                onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
                 className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" 
               />
             </div>
           </div>
           <div className="flex flex-col gap-1 mt-auto">
             <button 
-              onClick={() => { setSearch(''); setPage(1); }}
+              onClick={() => { setSearchQuery(''); setPage(1); }}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium text-slate-700 transition-colors"
             >
               <Filter className="w-4 h-4" />
@@ -157,7 +200,7 @@ export function Devices() {
                   </td>
                 </tr>
               ) : (
-                devices.map((device) => (
+                filteredDevices.map((device) => (
                   <tr key={device.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-2 py-2 sm:px-4 sm:py-3 font-mono text-emerald-600 font-medium text-xs flex items-center gap-2 truncate max-w-[150px]">
                       <Cpu className="w-4 h-4 text-emerald-400" />
