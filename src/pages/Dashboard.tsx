@@ -75,7 +75,6 @@ export function Dashboard() {
     const socket = io(); // Connects to the same origin by default
 
     socket.on('location_update', (data) => {
-      console.log("Real-time Bus Moved:", data);
       setLocations(prev => ({
         ...prev,
         [data.busId]: data
