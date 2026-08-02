@@ -50,7 +50,7 @@ async function startServer() {
   const apiProxy = createProxyMiddleware({
     target: TARGET_API,
     changeOrigin: true,
-    secure: false,
+    secure: true,
   });
   
   // Use a middleware function to avoid express stripping the path
@@ -66,7 +66,7 @@ async function startServer() {
     target: TARGET_API,
     changeOrigin: true,
     ws: true,
-    secure: false,
+    secure: true,
   });
   app.use('/socket.io', wsProxy);
 
