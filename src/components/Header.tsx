@@ -316,7 +316,7 @@ export function Header({ onMenuClick }: { onMenuClick: () => void }) {
             <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-0.5">{displayRole}</p>
           </div>
           <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold overflow-hidden">
-            <img src={`https://ui-avatars.com/api/?name=${displayName.replace(' ', '+')}&background=d1fae5&color=059669`} alt="Admin" className="w-full h-full object-cover" />
+            <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=d1fae5&color=059669`} alt="Admin" className="w-full h-full object-cover" />
           </div>
           <button 
             onClick={handleLogout}
